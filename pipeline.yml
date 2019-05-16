@@ -1,0 +1,41 @@
+resources:
+- name: lego
+  type: git
+  source:
+    uri: "https://github.com/go-acme/lego"
+- name: lego-2.5
+  type: git
+  source:
+    uri: "https://github.com/go-acme/lego"
+    tag_filter: v2.5.0
+
+- name: lego-image
+  type: docker-image
+  source:
+    repository: ((repository))
+    username: ((username))
+    password: ((password))
+    tag:
+- name: lego-image-2.5
+  type: docker-image
+  source:
+    repository: ((repository))
+    username: ((username))
+    password: ((password))
+    tag: v2.5.0
+
+jobs:
+- name: build-latest
+  plan:
+  - get: lego
+    trigger: true
+  - put: lego-image
+    params:
+      build: lego
+- name: build-stable
+  plan:
+  - get: lego-2.5
+    trigger: true
+  - put: lego-image-2.5
+    params:
+      build: lego-2.5
